@@ -8,30 +8,43 @@
     <h1>Web checker for exams</h1>
     <p>Write a program in python that will read 2 numbers (each number is entered on a separate line)
         and will output the sum of these numbers</p>
+
+    <h3>Run the written solution</h3>
     <form id="textForm">
         <textarea id="textInput" rows="10" cols="30" placeholder="Enter your python code"></textarea><br>
         <button type="button" id="submitButton">Submit</button>
     </form>
-    <p id="result"></p>
 
-    <script>
-        async function fetchMessage() {
-                const response = await fetch('/get_message', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                document.getElementById('output').innerText = data.message;
-            }
-    </script>
+    <h3>Run the solution from the git repository</h3>
+    <input type="text" id="repositoryNameInput" value="https://github.com/KonstBeliakov/test_repository.git">
+    <button id="SsubmitRepositoryNameButton">Submit</button>
+
+    <h3>Сheck result</h3>
+    <p id="result">Solutions have not been tested</p>
 
     <script>
         document.getElementById('submitButton').onclick = function() {
             const text = document.getElementById('textInput').value;
 
             fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = data.message;
+            });
+        };
+    </script>
+
+    <script>
+        document.getElementById('SsubmitRepositoryNameButton').onclick = function() {
+            const text = document.getElementById('repositoryNameInput').value;
+
+            fetch('/check_solution_from_github', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

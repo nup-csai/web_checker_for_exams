@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Многострочное поле ввода</title>
+</head>
+<body>
+    <h1>Web checker for exams</h1>
+    <p>Write a program in python that will read 2 numbers (each number is entered on a separate line)
+        and will output the sum of these numbers</p>
+    <form id="textForm">
+        <textarea id="textInput" rows="10" cols="30" placeholder="Enter your python code"></textarea><br>
+        <button type="button" id="submitButton">Submit</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        async function fetchMessage() {
+                const response = await fetch('/get_message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                document.getElementById('output').innerText = data.message;
+            }
+    </script>
+
+    <script>
+        document.getElementById('submitButton').onclick = function() {
+            const text = document.getElementById('textInput').value;
+
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = data.message;
+            });
+        };
+    </script>
+</body>
+</html>

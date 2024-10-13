@@ -29,7 +29,7 @@ def check_solution(code):
         with open(f'{test_directory_name}/{answers_filename}', 'r', encoding='utf-8') as file:
             answers.append(file.read())
 
-    test_message = ''
+    test_info = []
 
     for i, test_filename in enumerate(test_filenames):
         input_filename = f'{test_directory_name}/{test_filename}'
@@ -43,7 +43,7 @@ def check_solution(code):
                 with redirect_stdout(output_file):
                     exec(code)
             except Exception as e:
-                test_message += f'Error while running test {i}\n'
+                test_info.append([f'Test {i + 1}', 'RT'])
                 error_on_current_test = True
             sys.stdin = original_stdin
 
@@ -51,14 +51,11 @@ def check_solution(code):
             with open(output_filename, 'r', encoding='utf-8') as output_file:
                 answer = output_file.read()
             if check_answer(answer, answers[i]):
-                test_message += f'Test {i + 1} passed\n'
+                test_info.append([f'Test {i + 1}', 'OK'])
             else:
-                test_message += f'Test {i + 1}: wrong answer\n'
-                break
-        else:
-            break
+                test_info.append([f'Test {i + 1}', 'WA'])
 
-    return jsonify(message=test_message)
+    return jsonify(testing_data=test_info)
 
 
 @app.route('/submit', methods=['POST'])

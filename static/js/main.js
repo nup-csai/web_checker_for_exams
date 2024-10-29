@@ -51,7 +51,7 @@ document.getElementById('submitButton').onclick = function() {
 };
 
 
-document.getElementById('SsubmitRepositoryNameButton').onclick = function() {
+document.getElementById('SubmitRepositoryNameButton').onclick = function() {
     const text = document.getElementById('repositoryNameInput').value;
 
     fetch('/check_solution_from_github', {

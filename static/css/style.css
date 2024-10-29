@@ -15,3 +15,21 @@ th, td {
 .light-red {
     background-color: #f8d7da;
 }
+
+
+.input-group input {
+    flex: 1;
+    max-width: 300px;
+    width: 100%;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+.remove-btn {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #ff0000;
+}

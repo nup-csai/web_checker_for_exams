@@ -52,9 +52,17 @@ addFieldBtn.addEventListener('click', () => {
 
 submitBtn.addEventListener('click', () => {
     const inputs = inputContainer.getElementsByTagName('input');
+    const text_areas = inputContainer.getElementsByTagName("textarea");
     const values = [];
-    for (let input of inputs) {
-        values.push(input.value);
+    for (let i = 0;i < inputs.length;i++) {
+        values.push([inputs[i].value, text_areas[i].value]);
     }
-    console.log(values);
+    fetch('/apply_requirements', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({routes: values}),
+    })
+        .then(response => response.json())
 });

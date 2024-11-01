@@ -1,3 +1,6 @@
+import {add_routes} from './add_routes.js'
+
+
 function add_table(data){
     document.getElementById('tableContainer').innerHTML = '';
 
@@ -66,3 +69,6 @@ document.getElementById('SubmitRepositoryNameButton').onclick = function() {
         add_table(data.testing_data);
     });
 };
+
+add_routes(['/hello Miku', '/hello World', '/about'],
+    ['Hello, Miku', 'Hello, World', 'This is about page']);

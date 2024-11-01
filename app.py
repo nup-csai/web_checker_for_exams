@@ -10,7 +10,7 @@ import requests
 import time
 
 import utils
-
+import settings
 
 app = Flask(__name__)
 
@@ -76,6 +76,12 @@ def submit():
     return check_solution(code)
 
 
+@app.route('/apply_requirements', methods=['POST'])
+def apply_requirements():
+    data = request.get_json()
+    settings.routes = data.get('routes', [])
+
+
 @app.route('/check_solution_from_github', methods=['POST'])
 def check_solution_from_github():
     local_path = './cloned_repository'
@@ -108,13 +114,9 @@ def check_solution_from_github():
 
     time.sleep(5)  # waiting for program to start
 
-    requirements = {'/hello Miku': 'Hello, Miku!',
-                    '/hello World': 'Hello, World!',
-                    '/about': 'This is about page'}
-
     checking_results = []
 
-    for i, (route, right_answer) in enumerate(requirements.items(), start=1):
+    for i, (route, right_answer) in enumerate(settings.routes, start=1):
         print(f'Test {i}')
         try:
             url = f"http://localhost:8080{route}"

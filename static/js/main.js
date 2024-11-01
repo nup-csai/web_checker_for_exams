@@ -1,4 +1,4 @@
-import {add_routes} from './add_routes.js'
+import {DynamicFields} from "./dynamic_fields.js";
 
 
 function add_table(data){
@@ -54,15 +54,12 @@ document.getElementById('submitButton').onclick = function() {
 };
 
 
-document.getElementById('SubmitRepositoryNameButton').onclick = function() {
-    const text = document.getElementById('repositoryNameInput').value;
-
+document.getElementById('check_solutions').onclick = function () {
     fetch('/check_solution_from_github', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ text: text }),
     })
     .then(response => response.json())
     .then(data => {
@@ -70,5 +67,8 @@ document.getElementById('SubmitRepositoryNameButton').onclick = function() {
     });
 };
 
-add_routes(['/hello Miku', '/hello World', '/about'],
-    ['Hello, Miku', 'Hello, World', 'This is about page']);
+
+const fields1 = new DynamicFields('repositories', 'repositoryContainer',
+    'addRepositoryBtn', 'applyRepositoriesBtn');
+const fields2 = new DynamicFields('files', 'filesContainer1',
+    'addFileBtn', 'applyFilesBtn');

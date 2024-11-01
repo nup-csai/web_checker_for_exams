@@ -17,21 +17,32 @@
     </form>
 
     <h2>Run the solution from the git repository</h2>
-    <input type="text" id="repositoryNameInput" value="https://github.com/KonstBeliakov/test_repository.git">
-    <button id="SubmitRepositoryNameButton">Submit</button>
+    <!--<input type="text" id="repositoryNameInput" value="https://github.com/KonstBeliakov/test_repository.git">
+    <button id="SubmitRepositoryNameButton">Submit</button>-->
+    <div id="repositoryContainer" class="input-group"></div>
+    <button id="addRepositoryBtn">Add repository</button>
+    <button id="applyRepositoriesBtn">Apply</button>
 
-    <h2>Requirements</h2>
+    <h2>Routes</h2>
     <div id="inputContainer"></div>
     <button id="addFieldBtn">Add requirement</button>
     <button id="submitBtn">Apply</button>
     <script src="/static/js/requirements_buttons.js"></script>
 
+    <h2>Check for file existence</h2>
+    <div id="filesContainer1"></div>
+    <button id="addFileBtn">Add file</button>
+    <button id="applyFilesBtn">Apply</button>
+
+  <script src="../static/js/dynamic_fields.js"></script>
     <h2>Сheck result</h2>
+    <button id="check_solutions">Check solutions</button>
 
     <div id="tableContainer">
         <p id="result">Solutions have not been tested</p>
     </div>
 
-    <script type="module" src="/static/js/main.js"></script>
+    <script type="module" src="../static/js/main.js"></script>
+    <script src="../static/js/set_default_values.js"></script>
 </body>
 </html>

@@ -5,7 +5,6 @@ import sys
 import os
 from contextlib import redirect_stdout
 import pygit2
-import shutil
 import requests
 import time
 
@@ -80,6 +79,7 @@ def submit():
 def apply_requirements():
     data = request.get_json()
     settings.routes = data.get('routes', [])
+    return jsonify({"message": "Files updated successfully"}), 200
 
 
 @app.route('/check_solution_from_github', methods=['POST'])
@@ -88,7 +88,7 @@ def check_solution_from_github():
 
     utils.delete_folder(local_path)
 
-    repo_url = 'https://github.com/KonstBeliakov/test_repository.git'
+    repo_url = settings.repositories[0]  #'https://github.com/KonstBeliakov/test_repository.git'
     local_path = './cloned_repository'
     pygit2.clone_repository(repo_url, local_path)
 
@@ -148,6 +148,23 @@ def check_solution_from_github():
     utils.client.images.remove(image.id)
 
     return jsonify(testing_data=checking_results)
+
+
+@app.route('/dynamic_fields/<name>', methods=['POST'])
+def dynamic_fields(name):
+    match name:
+        case 'files':
+            data = request.get_json()
+            settings.files_that_should_exist = data.get('data', [])
+            print('settings.files_that_should_exist', settings.files_that_should_exist)
+            return jsonify({"message": "Files updated successfully"}), 200
+        case 'repositories':
+            data = request.get_json()
+            settings.repositories = data.get('data', [])
+            print('settings.repositories', settings.repositories)
+            return jsonify({"message": "Files updated successfully"}), 200
+        case _:
+            return jsonify({"error": "Invalid name provided"}), 404
 
 
 if __name__ == '__main__':

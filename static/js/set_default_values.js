@@ -34,8 +34,8 @@ function add_fields(values, addFieldBtnId, applyBtnId, containerId) {
     applyBtn.click();
 }
 
-add_routes(['/hello Miku!', '/hello World!', '/about'],
-['Hello, Miku', 'Hello, World', 'This is about page']);
+add_routes(['/hello Miku', '/hello World', '/about'],
+['Hello, Miku!', 'Hello, World!', 'This is about page']);
 
 setTimeout(() => {
     add_fields(['https://github.com/KonstBeliakov/test_repository.git'], 'addRepositoryBtn',

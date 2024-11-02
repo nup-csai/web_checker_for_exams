@@ -2,7 +2,7 @@ import threading
 
 from flask import Flask, render_template, request, jsonify
 import sys
-import os
+from pathlib import Path
 from contextlib import redirect_stdout
 import pygit2
 import requests
@@ -97,8 +97,18 @@ def check_solution_from_github():
 
     dockerfile_path = "./cloned_repository/Dockerfile"
 
+    # Checking for presence/absence of different files in the repository
+    files_checking_results = []
+    for filename in settings.files_that_should_exist:
+        file_path = f'./cloned_repository/{filename}'
+        path = Path(file_path)
+        if path.is_file():
+            files_checking_results.append([f"'{filename}'", 'OK'])
+        else:
+            files_checking_results.append([f"'{filename}'", "Doesn't exist"])
+
     # If there is no Dockerfile program will try to run main.py from the cloned repository
-    if not (os.path.exists(dockerfile_path) and os.path.isfile(dockerfile_path)):
+    if not Path(dockerfile_path).is_file():
         print(f'Dockerfile is not found. Trying to run main.py from {local_path}/')
         try:
             with open(f'./cloned_repository/main.py', 'r', encoding='utf-8') as f:
@@ -147,7 +157,7 @@ def check_solution_from_github():
     image = utils.client.images.get(image_name)
     utils.client.images.remove(image.id)
 
-    return jsonify(testing_data=checking_results)
+    return jsonify(routes_checking=checking_results, files_checking=files_checking_results)
 
 
 @app.route('/dynamic_fields/<name>', methods=['POST'])

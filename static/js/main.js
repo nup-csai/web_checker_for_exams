@@ -73,23 +73,6 @@ function add_table(data){
 }
 
 
-document.getElementById('submitButton').onclick = function() {
-    const text = document.getElementById('textInput').value;
-
-    fetch('/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: text }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        add_table(data);
-    });
-};
-
-
 document.getElementById('check_solutions').onclick = function () {
     const eventSource = new EventSource("/check_solution_from_github");
 

@@ -18,6 +18,8 @@ export class DynamicFields {
         const inputGroup = document.createElement('div');
         inputGroup.className = 'input-group';
 
+        const div= document.createElement('div');
+
         const newInput = document.createElement('input');
         newInput.type = 'text';
         newInput.placeholder = 'Enter text';
@@ -28,8 +30,10 @@ export class DynamicFields {
 
         removeBtn.addEventListener('click', () => this.removeField(inputGroup));
 
-        inputGroup.appendChild(newInput);
-        inputGroup.appendChild(removeBtn);
+        div.appendChild(newInput);
+        div.appendChild(removeBtn);
+
+        inputGroup.appendChild(div);
 
         this.container.appendChild(inputGroup);
     }

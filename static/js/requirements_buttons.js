@@ -13,6 +13,8 @@ addFieldBtn.addEventListener('click', () => {
     const h4 = document.createElement("h4");
     h4.textContent = "Route";
 
+    const div = document.createElement('div');
+
     const newInput = document.createElement('input');
     newInput.type = 'text';
     newInput.placeholder = 'Enter text';
@@ -41,8 +43,9 @@ addFieldBtn.addEventListener('click', () => {
     textarea.placeholder = "Enter the expected content of the page corresponding to this route...";
 
     inputGroup.appendChild(h4);
-    inputGroup.appendChild(newInput);
-    inputGroup.appendChild(removeBtn);
+    div.appendChild(newInput);
+    div.appendChild(removeBtn);
+    inputGroup.appendChild(div);
     inputGroup.appendChild(h4_2);
     inputGroup.appendChild(textarea);
 

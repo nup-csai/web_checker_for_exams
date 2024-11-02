@@ -15,8 +15,9 @@ th, td {
 .light-red {
     background-color: #f8d7da;
 }
-
-
+.input-group {
+  flex-direction: column;
+}
 .input-group input {
     flex: 1;
     max-width: 300px;

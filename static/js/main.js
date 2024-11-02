@@ -91,16 +91,22 @@ document.getElementById('submitButton').onclick = function() {
 
 
 document.getElementById('check_solutions').onclick = function () {
-    fetch('/check_solution_from_github', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        add_table(data);
-    });
+    const eventSource = new EventSource("/check_solution_from_github");
+
+    eventSource.onmessage = function(event) {
+        try {
+            const data = JSON.parse(event.data);
+            add_table(data);
+        } catch (error) {
+            console.log('error');
+            console.log(event.data);
+        }
+    };
+
+    eventSource.onerror = function() {
+        console.error("Connection error");
+        eventSource.close();
+    };
 };
 
 

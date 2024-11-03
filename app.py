@@ -2,12 +2,11 @@ import json
 import threading
 
 from flask import Flask, render_template, request, jsonify, Response
-import sys
 from pathlib import Path
-from contextlib import redirect_stdout
 import pygit2
 import requests
 import time
+import sqlite3
 
 import utils
 import settings
@@ -131,11 +130,14 @@ def dynamic_fields(name):
         case 'files':
             data = request.get_json()
             settings.files_that_should_exist = data.get('data', [])
-            print('settings.files_that_should_exist', settings.files_that_should_exist)
+            records = [(i,) for i in data.get('data', [])]
+            utils.executemany_sql_in_new_connection("INSERT INTO Files (name) VALUES (?)", records)
             return jsonify({"message": "Files updated successfully"}), 200
         case 'repositories':
             data = request.get_json()
             settings.repositories = data.get('data', [])
+            records = [(i,) for i in data.get('data', [])]
+            utils.executemany_sql_in_new_connection("INSERT INTO Repositories (repository_link) VALUES (?)", records)
             print('settings.repositories', settings.repositories)
             return jsonify({"message": "Files updated successfully"}), 200
         case _:
@@ -143,4 +145,6 @@ def dynamic_fields(name):
 
 
 if __name__ == '__main__':
+    utils.execute_sql_file('./web_checker_for_exams/sql/schema.sql')
+
     app.run(port=8081)

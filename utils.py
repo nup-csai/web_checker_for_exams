@@ -1,3 +1,4 @@
+import sqlite3
 import time
 
 import docker
@@ -78,6 +79,26 @@ def image_exists(image_name):
         if image_name in image.tags:
             return True
     return False
+
+
+def executemany_sql_in_new_connection(sql, seq_of_parameters):
+    conn = sqlite3.connect("database.sqlite")
+    cursor = conn.cursor()
+    cursor.executemany(sql, seq_of_parameters)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def execute_sql_file(filename):
+    with open(filename, 'r') as file:
+        sql_script = file.read()
+    conn = sqlite3.connect("database.sqlite")
+    cursor = conn.cursor()
+    cursor.executescript(sql_script)
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 
 if __name__ == '__main__':

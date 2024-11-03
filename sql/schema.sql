@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS Routes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     route VARCHAR(64),
     content TEXT,
-    check_content_script TEXT
+    check_content_script TEXT DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS RoutesChecking (

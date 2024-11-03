@@ -1,6 +1,7 @@
 import {DynamicFields} from "./dynamic_fields.js";
 
 
+// Need to be refactored
 function add_table(data){
 
     document.getElementById('tableContainer').innerHTML = '';
@@ -17,6 +18,12 @@ function add_table(data){
             tableContainer.appendChild(p);
             break;
         }
+
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        summary.textContent = "Checking information";
+        details.appendChild(summary);
+
         const table = document.createElement('table');
         const headerRow = document.createElement('tr');
         const headers = ['Test №', 'Status'];
@@ -50,9 +57,9 @@ function add_table(data){
         const files_header = document.createElement("h4");
         files_header.textContent = "Files";
 
-        tableContainer.appendChild(routes_header);
-        tableContainer.appendChild(table);
-        tableContainer.appendChild(files_header);
+        details.appendChild(routes_header);
+        details.appendChild(table);
+        details.appendChild(files_header);
 
         const table2 = document.createElement('table');
         const headerRow2 = document.createElement('tr');
@@ -81,7 +88,9 @@ function add_table(data){
             table2.appendChild(row);
         }
 
-        tableContainer.appendChild(table2);
+        details.appendChild(table2);
+
+        tableContainer.appendChild(details);
     }
 }
 

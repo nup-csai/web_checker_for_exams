@@ -124,3 +124,14 @@ if __name__ == '__main__':
         print('Deleting an image...')
         image = client.images.get(image_name)
         client.images.remove(image.id)
+
+
+def delete_container_and_image(container_name, image_name):
+    print(f'Deleting a container "{container_name}"...')
+    container = client.containers.get(container_name)
+    container.stop()
+    container.remove()
+
+    print(f'Deleting an image "{image_name}"...')
+    image = client.images.get(image_name)
+    client.images.remove(image.id)

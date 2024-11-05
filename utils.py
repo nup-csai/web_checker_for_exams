@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 import time
 
@@ -22,22 +23,25 @@ def delete_folder(folder_path):
         print(f"Folder '{folder_path}' does not exist.")
 
 
+def delete_container_and_image(container_name, image_name):
+    logging.info(f'Deleting a container "{container_name}"...')
+    container = client.containers.get(container_name)
+    container.stop()
+    container.remove()
+
+    logging.info(f'Deleting an image "{image_name}"...')
+    image = client.images.get(image_name)
+    client.images.remove(image.id)
+
+
 def build_docker_container(dockerfile_path="./", image_name="image", container_name='container',
                            building_logs=True, container_logs=True, delete_if_exist=True):
     try:
         if delete_if_exist:
             if container_exists(container_name):
-                print(f'Deleting a container \'{container_name}\'...')
-                container = client.containers.get(container_name)
-                container.stop()
-                container.remove()
+                delete_container_and_image(container_name, image_name)
 
-            if image_exists(image_name):
-                print(f'Deleting an image \'{image_name}\'...')
-                image = client.images.get(image_name)
-                client.images.remove(image.id)
-
-        print(f"Building Docker-image '{image_name}'...")
+        logging.info(f"Building Docker-image '{image_name}'...")
         image, build_logs = client.images.build(path=dockerfile_path, tag=image_name)
 
         if building_logs:
@@ -45,9 +49,9 @@ def build_docker_container(dockerfile_path="./", image_name="image", container_n
                 if 'stream' in log:
                     print(log['stream'].strip())
 
-        print(f"Image '{image_name}' created successfully.")
+        logging.info(f"Image '{image_name}' created successfully.")
+        logging.info(f"Starting a container '{container_name}'...")
 
-        print(f"Starting a container '{container_name}'...")
         container = client.containers.run(
             image=image_name,
             detach=True,
@@ -56,16 +60,16 @@ def build_docker_container(dockerfile_path="./", image_name="image", container_n
             #environment={"MY_ENV_VAR": "example_value"}
         )
 
-        print(f"Сontainer '{container.name}' started successfully")
+        logging.info(f"Сontainer '{container.name}' started successfully")
 
         if container_logs:
             print("Container logs:")
             print(container.logs().decode("utf-8"))
 
     except docker.errors.BuildError as e:
-        print(f"Exception while building docker-image: {e}")
+        logging.warning(f"Exception while building docker-image: {e}")
     except docker.errors.APIError as e:
-        print(f"Exception while starting docker-container: {e}")
+        logging.warning(f"Exception while starting docker-container: {e}")
 
 
 def container_exists(container_name):
@@ -116,22 +120,4 @@ if __name__ == '__main__':
     print(response.text)
 
     if input('Delete container and image (y/n)') == 'y':
-        print('Deleting a container...')
-        container = client.containers.get(container_name)
-        container.stop()
-        container.remove()
-
-        print('Deleting an image...')
-        image = client.images.get(image_name)
-        client.images.remove(image.id)
-
-
-def delete_container_and_image(container_name, image_name):
-    print(f'Deleting a container "{container_name}"...')
-    container = client.containers.get(container_name)
-    container.stop()
-    container.remove()
-
-    print(f'Deleting an image "{image_name}"...')
-    image = client.images.get(image_name)
-    client.images.remove(image.id)
+        delete_container_and_image(container_name, image_name)

@@ -7,10 +7,20 @@ import pygit2
 import requests
 import time
 import sqlite3
+import logging
 
 import utils
 
 app = Flask(__name__)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
 
 
 @app.route('/')
@@ -41,6 +51,7 @@ def check_files(data, files, repo_id, cursor, connection):
     :param connection: connection (to commit changes in the database)
     :return: None
     """
+    logging.info(f"Checking files if repo №{repo_id}")
     for i, filename in enumerate(files):
         file_path = f'./cloned_repository/{filename}'
         path = Path(file_path)
@@ -56,6 +67,8 @@ def check_files(data, files, repo_id, cursor, connection):
                            [(repo_id, file_id, status)])
         connection.commit()
 
+    logging.info(f'Results of checking files in repo №{repo_id}:\n{data[repo_id]['routes_checking']}')
+
 
 def check_routes(id_route_content, data, repo_id, cursor, connection):
     """
@@ -67,17 +80,13 @@ def check_routes(id_route_content, data, repo_id, cursor, connection):
     :param connection: connection (to commit changes in the database)
     :return: None
     """
+    logging.info(f"Checking routes in repo №{repo_id}")
     for route_id, route, right_answer in id_route_content:
-        print(f'Test {route_id}, route: {route}')
         try:
             url = f"http://localhost:8080{route}"
             response = requests.get(url)
             content = response.text
-            print(f'\troute: {route}')
-            print(f'\tcontent: {content}')
-            print(f'\tright answer: {right_answer}')
         except Exception as e:
-            print(e)
             data[repo_id]['files_checking'][route_id - 1][1] = 'RT'
             status = 'RT'
         else:
@@ -92,24 +101,23 @@ def check_routes(id_route_content, data, repo_id, cursor, connection):
                            [(repo_id, route_id, status)])
         connection.commit()
 
-        print('Checking results:')
-        print(data[repo_id]['files_checking'])
-        print()
+    logging.info(f'Results of checking routes in repo №{repo_id}:\n{data[repo_id]['files_checking']}')
 
 
 def run_solution(local_path, image_name, container_name):
-    '''
+    """
     This function runs code from cloned repository (if there is Dockerfile, docker container will be built, otherwise
     main.py will be started
     :param local_path: path to the cloned repository
     :param image_name: name of docker image that will be created
     :param container_name: name of docker container that will be created
     :return: None
-    '''
+    """
+    logging.info(f"Running solution from github {local_path}")
     dockerfile_path = f"{local_path}/Dockerfile"
     # If there is no Dockerfile program will try to run main.py from the cloned repository
     if not Path(dockerfile_path).is_file():
-        print(f'Dockerfile is not found. Trying to run main.py from {local_path}/')
+        logging.info(f"Dockerfile is not found. Trying to run main.py from {local_path}/")
         try:
             with open(f'./cloned_repository/main.py', 'r', encoding='utf-8') as f:
                 code = f.read()
@@ -118,9 +126,9 @@ def run_solution(local_path, image_name, container_name):
         except:
             pass
     else:
-        print('Dockerfile found')
+        logging.info(f"Dockerfile found. Building a container {container_name}")
         utils.build_docker_container(dockerfile_path='./cloned_repository/', image_name=image_name,
-                                     container_name=container_name)
+                                     container_name=container_name, building_logs=False, container_logs=False)
 
 
 @app.route('/check_solution_from_github')

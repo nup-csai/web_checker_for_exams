@@ -15,4 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag docker-image:$(date +%s)
+      run: |
+        docker build --file Dockerfile --tag docker-image:latest .
+        docker run -d -p 8081:8081 --name app_container docker-image:latest
+        docker exec app_container python ./tests.py

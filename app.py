@@ -208,7 +208,7 @@ def dynamic_fields(name):
 
 
 if __name__ == '__main__':
-    utils.execute_sql_file('./web_checker_for_exams/sql/drop_database.sql')
-    utils.execute_sql_file('./web_checker_for_exams/sql/schema.sql')
+    utils.execute_sql_file('./sql/drop_database.sql')
+    utils.execute_sql_file('./sql/schema.sql')
 
     app.run(port=8081)
